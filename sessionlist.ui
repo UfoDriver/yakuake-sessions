@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SessionList</class>
+ <widget class="QDialog" name="SessionList">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>248</width>
+    <height>228</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Yakuake Sessions</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QListView" name="listView"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="startButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Start</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="newButton">
+       <property name="text">
+        <string>New</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="editButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>startButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SessionList</receiver>
+   <slot>startSession()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>35</x>
+     <y>214</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SessionList</receiver>
+   <slot>newSession()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>214</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>192</x>
+     <y>196</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SessionList</receiver>
+   <slot>editSession()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>205</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>177</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listView</sender>
+   <signal>activated(QModelIndex)</signal>
+   <receiver>SessionList</receiver>
+   <slot>listActivated()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>248</x>
+     <y>69</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>newSession()</slot>
+  <slot>startSession()</slot>
+  <slot>editSession()</slot>
+  <slot>listActivated()</slot>
+ </slots>
+</ui>
