@@ -16,7 +16,8 @@ public:
     int rowCount(const QModelIndex &index) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     Session *getSession(int index) { return sessions.at(index); }
-    bool addSession(Session *session);
+    void addSession(Session *session);
+    void destroySession(Session *session);
 
 signals:
 

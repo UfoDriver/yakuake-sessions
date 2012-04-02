@@ -14,16 +14,12 @@ public:
         QUAD
     };
 
-    Session() : layout(Session::SINGLE) {
-        qDebug("Session constructor {NONE}");
-    }
+    Session() : layout(Session::SINGLE) {}
     Session(const QString &name, Layout layout, const QString &common_command,
             QStringList commands) :
         name(name), layout(layout), common_command(common_command),
-        commands(commands) {
-    qDebug("Session constructor [%s]", name.toLocal8Bit().data());
-    }
-    ~Session() { qDebug("Session destructor [%s]", name.toLocal8Bit().data()); }
+        commands(commands) {}
+    ~Session() {}
 
     QString name;
     Layout layout;

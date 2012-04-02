@@ -8,16 +8,9 @@ SessionModel::SessionModel(const QString &organization, const QString &applicati
     foreach (const QString &key, settings->childGroups()) {
         settings->beginGroup(key);
 
-        Session::Layout layout = static_cast<Session::Layout>(settings->value("layout", Session::SINGLE).toUInt());
-        QString common_command = settings->value("common_command").toString();
-        QStringList commands = settings->value("commands").toStringList();
-
-        sessions << new Session(key, layout, common_command, commands);
-
-
-//        sessions << Session(key, static_cast<Session::Layout>(settings->value("layout", Session::SINGLE).toUInt()),
-//                            settings->value("common_command").toString(),
-//                            settings->value("commands").toStringList());
+        sessions << new Session(key, static_cast<Session::Layout>(settings->value("layout", Session::SINGLE).toUInt()),
+                                settings->value("common_command").toString(),
+                                settings->value("commands").toStringList());
         settings->endGroup();
     }
 }
@@ -50,10 +43,18 @@ QVariant SessionModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool SessionModel::addSession(Session *session)
+void SessionModel::addSession(Session *session)
 {
     beginInsertRows(QModelIndex(), sessions.size(), sessions.size() + 1);
     sessions << session;
     endInsertRows();
-    return true;
+}
+
+void SessionModel::destroySession(Session *session)
+{
+    int index = sessions.indexOf(session);
+    beginRemoveRows(QModelIndex(), index, index);
+    sessions.removeAt(index);
+    delete session;
+    endRemoveRows();
 }

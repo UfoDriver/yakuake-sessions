@@ -14,6 +14,7 @@ SessionEdit::SessionEdit(QWidget *parent, Session *session, bool creationDialog)
         ui->singleSessionButton->setChecked(true);
         ui->saveButton->setDisabled(true);
         ui->saveButton->setText("Create");
+        ui->deleteButton->setDisabled(true);
     } else {
         ui->sessionNameEdit->setText(session->name);
 
@@ -53,7 +54,7 @@ void SessionEdit::sessionNameChanged(const QString &name)
 
 void SessionEdit::deleteSession()
 {
-
+    done(2);
 }
 
 void SessionEdit::accept() {

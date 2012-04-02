@@ -32,10 +32,10 @@ void SessionList::startSession()
             bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionQuad"));
             break;
         case Session::HORIZONTAL:
-            bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionTwoHorizontal"));
+            bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionTwoVertical"));
             break;
         case Session::VERTICAL:
-            bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionTwoVertical"));
+            bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionTwoHorizontal"));
             break;
         default:
             bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSession"));
@@ -86,7 +86,10 @@ void SessionList::newSession()
 
 void SessionList::editSession()
 {
-    SessionEdit(this, model->getSession(ui->listView->currentIndex().row()), false).exec();
+    Session *session = model->getSession(ui->listView->currentIndex().row());
+    if (SessionEdit(this, session, false).exec() == 2) {
+        model->destroySession(session);
+    }
 }
 
 void SessionList::listActivated()
