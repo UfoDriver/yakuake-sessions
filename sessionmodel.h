@@ -3,7 +3,7 @@
 
 #include <QAbstractListModel>
 #include <QSettings>
-#include <QMap>
+#include <QList>
 #include "session.h"
 
 
@@ -15,7 +15,8 @@ public:
     ~SessionModel();
     int rowCount(const QModelIndex &index) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    Session getSession(const QString &sessionName) { return sessions.value(sessionName); }
+    Session *getSession(int index) { return sessions.at(index); }
+    bool addSession(Session *session);
 
 signals:
 
@@ -23,7 +24,7 @@ public slots:
 
 private:
     QSettings *settings;
-    QMap<QString, Session> sessions;
+    QList<Session *> sessions;
 };
 
 #endif // SESSIONMODEL_H

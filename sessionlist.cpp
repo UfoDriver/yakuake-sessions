@@ -1,8 +1,8 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
-#include <QDebug>
 #include <QListIterator>
 #include "session.h"
+#include "sessionedit.h"
 #include "sessionlist.h"
 #include "ui_sessionlist.h"
 
@@ -25,10 +25,9 @@ SessionList::~SessionList()
 void SessionList::startSession()
 {
     QDBusConnection bus = QDBusConnection::sessionBus();
-    QString sessionName = model->data(ui->listView->currentIndex()).toString();
-    Session session = model->getSession(sessionName);
+    Session *session = model->getSession(ui->listView->currentIndex().row());
 
-    switch (session.layout) {
+    switch (session->layout) {
         case Session::QUAD:
             bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionQuad"));
             break;
@@ -51,15 +50,15 @@ void SessionList::startSession()
     QStringList terminalIds = reply.arguments().takeFirst().toString().split(",");
 
     foreach (const QString &terminalId, terminalIds) {
-        if (session.common_command.size()) {
+        if (session->common_command.size()) {
             QDBusMessage command = QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "runCommandInTerminal");
-            command << terminalId.toInt() << session.common_command;
+            command << terminalId.toInt() << session->common_command;
             bus.call(command);
         }
     }
 
     QListIterator<QString> terminals(terminalIds);
-    QListIterator<QString> commands(session.commands);
+    QListIterator<QString> commands(session->commands);
     while (terminals.hasNext() && commands.hasNext()) {
         QDBusMessage command = QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "runCommandInTerminal");
         command << terminals.next().toInt() << commands.next();
@@ -67,7 +66,7 @@ void SessionList::startSession()
     }
 
     QDBusMessage tabTitleMessage = QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/tabs", "org.kde.yakuake", "setTabTitle");
-    tabTitleMessage << sessionId << sessionName;
+    tabTitleMessage << sessionId << session->name;
     bus.call(tabTitleMessage);
     bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/window", "org.kde.yakuake", "toggleWindowState"));
 
@@ -76,12 +75,18 @@ void SessionList::startSession()
 
 void SessionList::newSession()
 {
-    qDebug("newSession");
+    Session *session = new Session();
+    SessionEdit dialog(this, session);
+    if (dialog.exec()) {
+        model->addSession(session);
+    } else {
+        delete session;
+    }
 }
 
 void SessionList::editSession()
 {
-    qDebug("editSession");
+    SessionEdit(this, model->getSession(ui->listView->currentIndex().row()), false).exec();
 }
 
 void SessionList::listActivated()

@@ -13,12 +13,14 @@ TEMPLATE = app
 SOURCES += main.cpp \
     sessionlist.cpp \
     sessionmodel.cpp \
-    session.cpp
+    session.cpp \
+    sessionedit.cpp
 
 HEADERS  += \
     sessionlist.h \
     sessionmodel.h \
-    session.h
+    session.h \
+    sessionedit.h
 
 FORMS += \
     sessionedit.ui \
