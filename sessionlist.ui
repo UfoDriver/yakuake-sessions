@@ -116,11 +116,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>listView</sender>
+   <signal>doubleClicked(QModelIndex)</signal>
+   <receiver>SessionList</receiver>
+   <slot>startSession()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>117</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>253</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>newSession()</slot>
   <slot>startSession()</slot>
   <slot>editSession()</slot>
   <slot>listActivated()</slot>
+  <slot>listDoubleClicked()</slot>
  </slots>
 </ui>
