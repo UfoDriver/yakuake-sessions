@@ -34,10 +34,10 @@ SessionEdit::SessionEdit(QWidget *parent, Session *session, bool creationDialog)
 
         ui->commonCommandEdit->setText(session->common_command);
 
-        ui->command0Edit->setText(session->commands.value(0));
-        ui->command1Edit->setText(session->commands.value(1));
-        ui->command2Edit->setText(session->commands.value(2));
-        ui->command3Edit->setText(session->commands.value(3));
+        for (int i = 0; i < 4; i++) {
+            QLineEdit *editor = findChild<QLineEdit *>(QString("command%1Edit").arg(i));
+            editor->setText(session->commands.value(i));
+        }
     }
 }
 
@@ -70,9 +70,11 @@ void SessionEdit::accept() {
     }
     session->common_command = ui->commonCommandEdit->text();
     session->commands.clear();
-    session->commands << ui->command0Edit->text();
-    session->commands << ui->command1Edit->text();
-    session->commands << ui->command2Edit->text();
-    session->commands << ui->command3Edit->text();
+
+    for (int i = 0; i < 4; i++) {
+        QLineEdit *editor = findChild<QLineEdit *>(QString("command%1Edit").arg(i));
+        session->commands << editor->text();
+    }
+
     QDialog::accept();
 }
