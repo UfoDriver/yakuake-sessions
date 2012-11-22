@@ -25,3 +25,6 @@ HEADERS  += \
 FORMS += \
     sessionedit.ui \
     sessionlist.ui
+
+RESOURCES += \
+    resources.qrc

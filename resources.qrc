@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/view-split-left-right.png</file>
+        <file>resources/view-split-none.png</file>
+        <file>resources/view-split-quad.png</file>
+        <file>resources/view-split-top-bottom.png</file>
+    </qresource>
+</RCC>
