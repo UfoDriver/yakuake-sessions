@@ -19,6 +19,7 @@ public:
 
 public slots:
     void sessionNameChanged(const QString &name);
+    void sessionTypeChanged();
     void deleteSession();
     void accept();
 

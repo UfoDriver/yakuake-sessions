@@ -11,7 +11,7 @@ SessionEdit::SessionEdit(QWidget *parent, Session *session, bool creationDialog)
     ui->setupUi(this);
 
     if (creationDialog) {
-        ui->singleSessionButton->setChecked(true);
+        ui->singleSessionButton->animateClick();
         ui->saveButton->setDisabled(true);
         ui->saveButton->setText("Create");
         ui->deleteButton->setDisabled(true);
@@ -20,16 +20,16 @@ SessionEdit::SessionEdit(QWidget *parent, Session *session, bool creationDialog)
 
         switch (session->layout) {
         case Session::QUAD:
-            ui->quadSessionButton->setChecked(true);
+            ui->quadSessionButton->animateClick();
             break;
         case Session::VERTICAL:
-            ui->verticalSessionButton->setChecked(true);
+            ui->verticalSessionButton->animateClick();
             break;
         case Session::HORIZONTAL:
-            ui->horizontalSessionButton->setChecked(true);
+            ui->horizontalSessionButton->animateClick();
             break;
         default:
-            ui->singleSessionButton->setChecked(true);
+            ui->singleSessionButton->animateClick();
         }
 
         ui->commonCommandEdit->setText(session->common_command);
@@ -46,10 +46,27 @@ SessionEdit::~SessionEdit()
     delete ui;
 }
 
-
 void SessionEdit::sessionNameChanged(const QString &name)
 {
     ui->saveButton->setDisabled(name.isEmpty());
+}
+
+void SessionEdit::sessionTypeChanged()
+{
+    int enabledItemsCount = 2;
+
+    if (sender() == ui->singleSessionButton) {
+        enabledItemsCount = 1;
+    } else if (sender() == ui->quadSessionButton) {
+        enabledItemsCount = 4;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        QWidget *editor = findChild<QWidget *>(QString("command%1Edit").arg(i));
+        editor->setEnabled(i < enabledItemsCount);
+        QWidget *label = findChild<QWidget *>(QString("labelCommand%1").arg(i));
+        label->setEnabled(i < enabledItemsCount);
+    }
 }
 
 void SessionEdit::deleteSession()
