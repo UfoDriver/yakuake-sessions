@@ -1,7 +1,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
-#include <QListIterator>
 #include <QItemSelectionModel>
+#include <QListIterator>
 #include <QModelIndex>
 #include "session.h"
 #include "sessionedit.h"
@@ -16,6 +16,10 @@ SessionList::SessionList(QDialog *parent) :
     ui->setupUi(this);
     model = new SessionModel("WildPeppers.net", "YakuakeSessions");
     ui->listView->setModel(model);
+
+    connect(ui->listView->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection &)),
+            SLOT(selectionChanged()));
 }
 
 SessionList::~SessionList()
@@ -30,7 +34,7 @@ void SessionList::startSession()
     QItemSelectionModel *selectionModel = ui->listView->selectionModel();
 
     foreach (const QModelIndex index, selectionModel->selectedIndexes()) {
-        Session *session = model->getSession(index.row());
+        Session *session = (Session *)model->data(index, Qt::UserRole).value<void *>();
 
         switch (session->layout) {
             case Session::QUAD:
@@ -93,14 +97,15 @@ void SessionList::newSession()
 
 void SessionList::editSession()
 {
-    Session *session = model->getSession(ui->listView->currentIndex().row());
+    Session *session = (Session *)model->data(ui->listView->currentIndex(), Qt::UserRole).value<void *>();
     if (SessionEdit(this, session, false).exec() == 2) {
         model->destroySession(session);
     }
 }
 
-void SessionList::listActivated()
+void SessionList::selectionChanged()
 {
-   ui->startButton->setEnabled(true);
-   ui->editButton->setEnabled(true);
+    bool isSingle = ui->listView->selectionModel()->selectedIndexes().length() == 1;
+    ui->startButton->setEnabled(true);
+    ui->editButton->setEnabled(isSingle);
 }

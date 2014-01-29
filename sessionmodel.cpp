@@ -37,10 +37,14 @@ int SessionModel::rowCount(const QModelIndex &) const
 
 QVariant SessionModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole) {
-        return sessions.at(index.row())->name;
+    switch (role) {
+        case Qt::DisplayRole:
+            return sessions.at(index.row())->name;
+        case Qt::UserRole:
+            return QVariant::fromValue((void *)sessions.at(index.row()));
+        default:
+            return QVariant();
     }
-    return QVariant();
 }
 
 void SessionModel::addSession(Session *session)

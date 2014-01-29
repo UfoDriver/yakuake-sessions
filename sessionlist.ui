@@ -109,22 +109,6 @@
   </connection>
   <connection>
    <sender>listView</sender>
-   <signal>activated(QModelIndex)</signal>
-   <receiver>SessionList</receiver>
-   <slot>listActivated()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>103</x>
-     <y>79</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>248</x>
-     <y>69</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>listView</sender>
    <signal>doubleClicked(QModelIndex)</signal>
    <receiver>SessionList</receiver>
    <slot>startSession()</slot>

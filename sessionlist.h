@@ -2,6 +2,7 @@
 #define SESSIONLIST_H
 
 #include <QDialog>
+#include <QItemSelection>
 #include <QSettings>
 #include "sessionmodel.h"
 
@@ -22,7 +23,7 @@ public slots:
     void startSession();
     void newSession();
     void editSession();
-    void listActivated();
+    void selectionChanged();
 
 private:
     Ui::SessionList *ui;
