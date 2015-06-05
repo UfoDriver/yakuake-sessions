@@ -1,5 +1,4 @@
-#include <QDBusConnection>
-#include <QDBusMessage>
+#include <QDBusInterface>
 #include <QItemSelectionModel>
 #include <QListIterator>
 #include <QModelIndex>
@@ -30,55 +29,48 @@ SessionList::~SessionList()
 
 void SessionList::startSession()
 {
-    QDBusConnection bus = QDBusConnection::sessionBus();
+    QDBusInterface yakuake("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake");
+    QDBusInterface yakuakeTabs("org.kde.yakuake", "/yakuake/tabs", "org.kde.yakuake");
+    QDBusInterface yakuakeWin("org.kde.yakuake", "/yakuake/window", "org.kde.yakuake");
+
     QItemSelectionModel *selectionModel = ui->listView->selectionModel();
 
     foreach (const QModelIndex index, selectionModel->selectedIndexes()) {
         Session *session = (Session *)model->data(index, Qt::UserRole).value<void *>();
+        QVariant sessionId;
 
         switch (session->layout) {
             case Session::QUAD:
-                bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionQuad"));
+                sessionId = yakuake.call("addSessionQuad").arguments().takeFirst();
                 break;
             case Session::HORIZONTAL:
-                bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionTwoVertical"));
+                sessionId = yakuake.call("addSessionTwoVertical").arguments().takeFirst();
                 break;
             case Session::VERTICAL:
-                bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSessionTwoHorizontal"));
+                sessionId = yakuake.call("addSessionTwoHorizontal").arguments().takeFirst();
                 break;
             default:
-                bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "addSession"));
+                sessionId = yakuake.call("addSession").arguments().takeFirst();
         }
 
-        QDBusMessage reply = bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "activeSessionId"));
-        QVariant sessionId = reply.arguments().takeFirst();
-        QDBusMessage terminalIdsMessage = QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "terminalIdsForSessionId");
-        terminalIdsMessage << sessionId;
-        reply = bus.call(terminalIdsMessage);
-        // I'd expect a list of ints here but we have a string with comma separated ids
-        QStringList terminalIds = reply.arguments().takeFirst().toString().split(",");
+        QStringList terminalIds = yakuake.call("terminalIdsForSessionId", sessionId).arguments().takeFirst().toString().split(",");
 
-        foreach (const QString &terminalId, terminalIds) {
-            if (session->common_command.size()) {
-                QDBusMessage command = QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "runCommandInTerminal");
-                command << terminalId.toInt() << session->common_command;
-                bus.call(command);
+        if (session->common_command.size()) {
+            foreach (const QString &terminalId, terminalIds) {
+                yakuake.call("runCommandInTerminal", terminalId.toInt(), session->common_command);
             }
         }
 
         QListIterator<QString> terminals(terminalIds);
         QListIterator<QString> commands(session->commands);
         while (terminals.hasNext() && commands.hasNext()) {
-            QDBusMessage command = QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/sessions", "org.kde.yakuake", "runCommandInTerminal");
-            command << terminals.next().toInt() << commands.next();
-            bus.call(command);
+            yakuake.call("runCommandInTerminal", terminals.next().toInt(), commands.next());
         }
 
-        QDBusMessage tabTitleMessage = QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/tabs", "org.kde.yakuake", "setTabTitle");
-        tabTitleMessage << sessionId << session->name;
-        bus.call(tabTitleMessage);
-        bus.call(QDBusMessage::createMethodCall("org.kde.yakuake", "/yakuake/window", "org.kde.yakuake", "toggleWindowState"));
+        yakuakeTabs.call("setTabTitle", sessionId, session->name);
     }
+
+    yakuakeWin.call("toggleWindowState");
 
     delete selectionModel;
     qApp->exit();
