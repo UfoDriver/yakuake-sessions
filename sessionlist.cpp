@@ -1,6 +1,7 @@
 #include <QDBusInterface>
 #include <QItemSelectionModel>
 #include <QListIterator>
+#include <QMessageBox>
 #include <QModelIndex>
 #include "session.h"
 #include "sessionedit.h"
@@ -35,45 +36,49 @@ void SessionList::startSession()
 
     QItemSelectionModel *selectionModel = ui->listView->selectionModel();
 
-    foreach (const QModelIndex index, selectionModel->selectedIndexes()) {
-        Session *session = (Session *)model->data(index, Qt::UserRole).value<void *>();
-        QVariant sessionId;
+    if (yakuake.isValid()) {
+        foreach (const QModelIndex index, selectionModel->selectedIndexes()) {
+            Session *session = (Session *)model->data(index, Qt::UserRole).value<void *>();
+            QVariant sessionId;
 
-        switch (session->layout) {
-            case Session::QUAD:
-                sessionId = yakuake.call("addSessionQuad").arguments().takeFirst();
-                break;
-            case Session::HORIZONTAL:
-                sessionId = yakuake.call("addSessionTwoVertical").arguments().takeFirst();
-                break;
-            case Session::VERTICAL:
-                sessionId = yakuake.call("addSessionTwoHorizontal").arguments().takeFirst();
-                break;
-            default:
-                sessionId = yakuake.call("addSession").arguments().takeFirst();
-        }
-
-        QStringList terminalIds = yakuake.call("terminalIdsForSessionId", sessionId).arguments().takeFirst().toString().split(",");
-
-        if (session->common_command.size()) {
-            foreach (const QString &terminalId, terminalIds) {
-                yakuake.call("runCommandInTerminal", terminalId.toInt(), session->common_command);
+            switch (session->layout) {
+                case Session::QUAD:
+                    sessionId = yakuake.call("addSessionQuad").arguments().takeFirst();
+                    break;
+                case Session::HORIZONTAL:
+                    sessionId = yakuake.call("addSessionTwoVertical").arguments().takeFirst();
+                    break;
+                case Session::VERTICAL:
+                    sessionId = yakuake.call("addSessionTwoHorizontal").arguments().takeFirst();
+                    break;
+                default:
+                    sessionId = yakuake.call("addSession").arguments().takeFirst();
             }
+
+            QStringList terminalIds = yakuake.call("terminalIdsForSessionId", sessionId).arguments().takeFirst().toString().split(",");
+
+            if (session->common_command.size()) {
+                foreach (const QString &terminalId, terminalIds) {
+                    yakuake.call("runCommandInTerminal", terminalId.toInt(), session->common_command);
+                }
+            }
+
+            QListIterator<QString> terminals(terminalIds);
+            QListIterator<QString> commands(session->commands);
+            while (terminals.hasNext() && commands.hasNext()) {
+                yakuake.call("runCommandInTerminal", terminals.next().toInt(), commands.next());
+            }
+
+            yakuakeTabs.call("setTabTitle", sessionId, session->name);
         }
 
-        QListIterator<QString> terminals(terminalIds);
-        QListIterator<QString> commands(session->commands);
-        while (terminals.hasNext() && commands.hasNext()) {
-            yakuake.call("runCommandInTerminal", terminals.next().toInt(), commands.next());
-        }
+        yakuakeWin.call("toggleWindowState");
 
-        yakuakeTabs.call("setTabTitle", sessionId, session->name);
+        delete selectionModel;
+        qApp->exit();
+    } else {
+        QMessageBox::warning(this, "Warning", "It seems that Yakuake is not running.");
     }
-
-    yakuakeWin.call("toggleWindowState");
-
-    delete selectionModel;
-    qApp->exit();
 }
 
 void SessionList::newSession()
