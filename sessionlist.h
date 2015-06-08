@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QItemSelection>
 #include <QSettings>
+#include "session.h"
 #include "sessionmodel.h"
 
 
@@ -28,6 +29,7 @@ public slots:
 private:
     Ui::SessionList *ui;
     SessionModel *model;
+    const static char* commandsMap[];
 };
 
 #endif // SESSIONLIST_H

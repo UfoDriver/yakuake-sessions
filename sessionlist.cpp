@@ -39,22 +39,7 @@ void SessionList::startSession()
     if (yakuake.isValid()) {
         foreach (const QModelIndex index, selectionModel->selectedIndexes()) {
             Session *session = (Session *)model->data(index, Qt::UserRole).value<void *>();
-            QVariant sessionId;
-
-            switch (session->layout) {
-                case Session::QUAD:
-                    sessionId = yakuake.call("addSessionQuad").arguments().takeFirst();
-                    break;
-                case Session::HORIZONTAL:
-                    sessionId = yakuake.call("addSessionTwoVertical").arguments().takeFirst();
-                    break;
-                case Session::VERTICAL:
-                    sessionId = yakuake.call("addSessionTwoHorizontal").arguments().takeFirst();
-                    break;
-                default:
-                    sessionId = yakuake.call("addSession").arguments().takeFirst();
-            }
-
+            QVariant sessionId = yakuake.call(SessionList::commandsMap[session->layout]).arguments().takeFirst();
             QStringList terminalIds = yakuake.call("terminalIdsForSessionId", sessionId).arguments().takeFirst().toString().split(",");
 
             if (session->common_command.size()) {
@@ -106,3 +91,8 @@ void SessionList::selectionChanged()
     ui->startButton->setEnabled(true);
     ui->editButton->setEnabled(isSingle);
 }
+
+const char* SessionList::commandsMap[] = {"addSession",
+                                          "addSessionTwoHorizontal",
+                                          "addSessionTwoVertical",
+                                          "addSessionQuad"};
