@@ -5,13 +5,15 @@ This small program adds session support for yakuake. This allows you to save som
 
 ## Installation
 
-Before building you need to make sure that qt-devel or qt-dev package installed. Fedora users can innstall that package issuing
+Before building you need to make sure that qt5-base-devel or qt-dev package installed. Fedora users can innstall that package issuing
 
-`# yum install qt-devel`
+`# dnf install qt5-qtbase-devel`
 
 in command prompt. Ubuntu users can run
 
 `$ sudo apt-get install libqt4-dev`
+
+(Not sure about Ubuntu, don't have it now).
 
 ### Building
 
@@ -21,7 +23,7 @@ Clone the project:
 
 Create makefile:
 
-`$ qmake-qt4`
+`$ qmake-qt5`
 
 Build program:
 
