@@ -1,4 +1,6 @@
 #include <QModelIndex>
+#include <QIcon>
+#include <algorithm>
 #include "sessionmodel.h"
 
 SessionModel::SessionModel(const QString &organization, const QString &application) :
@@ -10,11 +12,13 @@ SessionModel::SessionModel(const QString &organization, const QString &applicati
 
         sessions << new Session(key, static_cast<Session::Layout>(settings->value("layout", Session::SINGLE).toUInt()),
                                 settings->value("common_command").toString(),
-                                settings->value("commands").toStringList());
+                                settings->value("commands").toStringList(),
+                                settings->value("favorite").toBool());
         settings->endGroup();
     }
-}
 
+    std::sort(sessions.begin(), sessions.end(), compare_sessions_by_pointer);
+}
 
 SessionModel::~SessionModel()
 {
@@ -24,6 +28,7 @@ SessionModel::~SessionModel()
         settings->setValue("layout", session->layout);
         settings->setValue("common_command", session->common_command);
         settings->setValue("commands", session->commands);
+        settings->setValue("favorite", session->favorite);
         settings->endGroup();
         delete session;
     }
@@ -42,6 +47,12 @@ QVariant SessionModel::data(const QModelIndex &index, int role) const
             return sessions.at(index.row())->name;
         case Qt::UserRole:
             return QVariant::fromValue((void *)sessions.at(index.row()));
+        case Qt::DecorationRole:
+        if (sessions.at(index.row())->favorite) {
+            return QIcon(":/resources/bookmarks.png");
+           } else {
+            return QVariant();
+        }
         default:
             return QVariant();
     }

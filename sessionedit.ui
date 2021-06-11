@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>351</width>
-    <height>266</height>
+    <width>608</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -192,6 +192,13 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="favoriteCheckBox">
+       <property name="text">
+        <string>Favorite</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

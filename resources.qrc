@@ -4,5 +4,6 @@
         <file>resources/view-split-none.png</file>
         <file>resources/view-split-quad.png</file>
         <file>resources/view-split-top-bottom.png</file>
+        <file>resources/bookmarks.png</file>
     </qresource>
 </RCC>

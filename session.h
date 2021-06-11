@@ -16,15 +16,26 @@ public:
 
     Session() : layout(Session::SINGLE) {}
     Session(const QString &name, Layout layout, const QString &common_command,
-            QStringList commands) :
+            QStringList commands, bool favorite) :
         name(name), layout(layout), common_command(common_command),
-        commands(commands) {}
+        commands(commands), favorite(favorite) {}
     ~Session() {}
+
+    bool operator<(const Session& rhs) const {
+        if (favorite ^ rhs.favorite) {
+            return favorite;
+        } else {
+            return name < rhs.name;
+        }
+    }
 
     QString name;
     Layout layout;
     QString common_command;
     QStringList commands;
+    bool favorite;
 };
+
+bool compare_sessions_by_pointer(const Session* l, const Session* r);
 
 #endif // SESSION_H

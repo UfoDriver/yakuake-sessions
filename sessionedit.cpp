@@ -38,6 +38,7 @@ SessionEdit::SessionEdit(QWidget *parent, Session *session, bool creationDialog)
             QLineEdit *editor = findChild<QLineEdit *>(QString("command%1Edit").arg(i));
             editor->setText(session->commands.value(i));
         }
+        ui->favoriteCheckBox->setCheckState(session->favorite ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
     }
 }
 
@@ -87,6 +88,7 @@ void SessionEdit::accept() {
     }
     session->common_command = ui->commonCommandEdit->text();
     session->commands.clear();
+    session->favorite = ui->favoriteCheckBox->checkState() == Qt::CheckState::Checked;
 
     for (int i = 0; i < 4; i++) {
         QLineEdit *editor = findChild<QLineEdit *>(QString("command%1Edit").arg(i));
