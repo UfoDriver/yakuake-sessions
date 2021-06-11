@@ -49,7 +49,7 @@ QVariant SessionModel::data(const QModelIndex &index, int role) const
             return QVariant::fromValue((void *)sessions.at(index.row()));
         case Qt::DecorationRole:
         if (sessions.at(index.row())->favorite) {
-            return QIcon(":/resources/bookmarks.png");
+            return QIcon::fromTheme("favorite");
            } else {
             return QVariant();
         }

@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/view-split-left-right.png</file>
-        <file>resources/view-split-none.png</file>
-        <file>resources/view-split-quad.png</file>
-        <file>resources/view-split-top-bottom.png</file>
-        <file>resources/bookmarks.png</file>
+        <file>custom-icons/view-split-left-right.png</file>
+        <file>custom-icons/view-split-none.png</file>
+        <file>custom-icons/view-split-quad.png</file>
+        <file>custom-icons/view-split-top-bottom.png</file>
+        <file>custom-icons/favorite.png</file>
     </qresource>
 </RCC>

@@ -42,8 +42,8 @@
         <string>Single session</string>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/resources/view-split-none.png</normaloff>:/resources/view-split-none.png</iconset>
+        <iconset theme="view-split-none">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -62,8 +62,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/resources/view-split-left-right.png</normaloff>:/resources/view-split-left-right.png</iconset>
+        <iconset theme="view-split-left-right"/>
        </property>
        <property name="iconSize">
         <size>
@@ -82,8 +81,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/resources/view-split-top-bottom.png</normaloff>:/resources/view-split-top-bottom.png</iconset>
+        <iconset theme="view-split-top-bottom"/>
        </property>
        <property name="iconSize">
         <size>
@@ -102,8 +100,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/resources/view-split-quad.png</normaloff>:/resources/view-split-quad.png</iconset>
+        <iconset theme="view-split-quad"/>
        </property>
        <property name="iconSize">
         <size>
@@ -251,9 +248,7 @@
   <tabstop>saveButton</tabstop>
   <tabstop>cancelButton</tabstop>
  </tabstops>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>cancelButton</sender>
