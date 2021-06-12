@@ -7,7 +7,7 @@ SessionModel::SessionModel(const QString &organization, const QString &applicati
     QAbstractListModel()
 {
     settings = new QSettings(organization, application);
-    foreach (const QString &key, settings->childGroups()) {
+    for (const QString &key: settings->childGroups()) {
         settings->beginGroup(key);
 
         sessions << new Session(key, static_cast<Session::Layout>(settings->value("layout", Session::SINGLE).toUInt()),
@@ -23,7 +23,7 @@ SessionModel::SessionModel(const QString &organization, const QString &applicati
 SessionModel::~SessionModel()
 {
     settings->clear();
-    foreach (const Session *session, sessions) {
+    for (const Session* session: sessions) {
         settings->beginGroup(session->name);
         settings->setValue("layout", session->layout);
         settings->setValue("common_command", session->common_command);

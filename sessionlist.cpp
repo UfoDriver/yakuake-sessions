@@ -11,11 +11,11 @@
 
 SessionList::SessionList(QDialog *parent) :
     QDialog(parent),
-    ui(new Ui::SessionList)
+    ui(new Ui::SessionList),
+    model("WildPeppers.net", "YakuakeSessions")
 {
     ui->setupUi(this);
-    model = new SessionModel("WildPeppers.net", "YakuakeSessions");
-    ui->listView->setModel(model);
+    ui->listView->setModel(&model);
 
     connect(ui->listView->selectionModel(),
             SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection &)),
@@ -25,7 +25,6 @@ SessionList::SessionList(QDialog *parent) :
 SessionList::~SessionList()
 {
     delete ui;
-    delete model;
 }
 
 void SessionList::startSession()
@@ -37,13 +36,13 @@ void SessionList::startSession()
     QItemSelectionModel *selectionModel = ui->listView->selectionModel();
 
     if (yakuake.isValid()) {
-        foreach (const QModelIndex index, selectionModel->selectedIndexes()) {
-            Session *session = (Session *)model->data(index, Qt::UserRole).value<void *>();
+        for (const QModelIndex& index: selectionModel->selectedIndexes()) {
+            Session *session = (Session *)model.data(index, Qt::UserRole).value<void *>();
             QVariant sessionId = yakuake.call(SessionList::commandsMap[session->layout]).arguments().takeFirst();
             QStringList terminalIds = yakuake.call("terminalIdsForSessionId", sessionId).arguments().takeFirst().toString().split(",");
 
             if (session->common_command.size()) {
-                foreach (const QString &terminalId, terminalIds) {
+                for (const QString& terminalId: terminalIds) {
                     yakuake.call("runCommandInTerminal", terminalId.toInt(), session->common_command);
                 }
             }
@@ -71,7 +70,7 @@ void SessionList::newSession()
     Session *session = new Session();
     SessionEdit dialog(this, session);
     if (dialog.exec()) {
-        model->addSession(session);
+        model.addSession(session);
     } else {
         delete session;
     }
@@ -79,9 +78,9 @@ void SessionList::newSession()
 
 void SessionList::editSession()
 {
-    Session *session = (Session *)model->data(ui->listView->currentIndex(), Qt::UserRole).value<void *>();
+    Session *session = (Session *)model.data(ui->listView->currentIndex(), Qt::UserRole).value<void *>();
     if (SessionEdit(this, session, false).exec() == 2) {
-        model->destroySession(session);
+        model.destroySession(session);
     }
 }
 

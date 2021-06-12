@@ -28,7 +28,7 @@ public slots:
 
 private:
     Ui::SessionList *ui;
-    SessionModel *model;
+    SessionModel model;
     const static char* commandsMap[];
 };
 
