@@ -24,7 +24,7 @@ signals:
 public slots:
 
 private:
-    QSettings *settings;
+    QSettings settings;
     QList<Session *> sessions;
 };
 

@@ -4,17 +4,16 @@
 #include "sessionmodel.h"
 
 SessionModel::SessionModel(const QString &organization, const QString &application) :
-    QAbstractListModel()
+    QAbstractListModel(),
+    settings(organization, application)
 {
-    settings = new QSettings(organization, application);
-    for (const QString &key: settings->childGroups()) {
-        settings->beginGroup(key);
-
-        sessions << new Session(key, static_cast<Session::Layout>(settings->value("layout", Session::SINGLE).toUInt()),
-                                settings->value("common_command").toString(),
-                                settings->value("commands").toStringList(),
-                                settings->value("favorite").toBool());
-        settings->endGroup();
+    for (const QString &key: settings.childGroups()) {
+        settings.beginGroup(key);
+        sessions << new Session(key, static_cast<Session::Layout>(settings.value("layout", Session::SINGLE).toUInt()),
+                                settings.value("common_command").toString(),
+                                settings.value("commands").toStringList(),
+                                settings.value("favorite").toBool());
+        settings.endGroup();
     }
 
     std::sort(sessions.begin(), sessions.end(), compare_sessions_by_pointer);
@@ -22,17 +21,16 @@ SessionModel::SessionModel(const QString &organization, const QString &applicati
 
 SessionModel::~SessionModel()
 {
-    settings->clear();
+    settings.clear();
     for (const Session* session: sessions) {
-        settings->beginGroup(session->name);
-        settings->setValue("layout", session->layout);
-        settings->setValue("common_command", session->common_command);
-        settings->setValue("commands", session->commands);
-        settings->setValue("favorite", session->favorite);
-        settings->endGroup();
+        settings.beginGroup(session->name);
+        settings.setValue("layout", session->layout);
+        settings.setValue("common_command", session->common_command);
+        settings.setValue("commands", session->commands);
+        settings.setValue("favorite", session->favorite);
+        settings.endGroup();
         delete session;
     }
-    delete settings;
 }
 
 int SessionModel::rowCount(const QModelIndex &) const
