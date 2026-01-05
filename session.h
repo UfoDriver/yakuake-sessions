@@ -29,6 +29,4 @@ public:
   bool favorite;
 };
 
-bool compare_sessions_by_pointer(const Session *l, const Session *r);
-
 #endif // SESSION_H
