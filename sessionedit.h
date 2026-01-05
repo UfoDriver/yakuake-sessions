@@ -5,7 +5,7 @@
 #include "session.h"
 
 namespace Ui {
-    class SessionEdit;
+class SessionEdit;
 }
 
 class SessionEdit : public QDialog

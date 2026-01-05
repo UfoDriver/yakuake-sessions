@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <QItemSelection>
 #include <QSettings>
-#include "session.h"
 #include "sessionmodel.h"
 
 
@@ -25,6 +24,10 @@ public slots:
     void newSession();
     void editSession();
     void selectionChanged();
+
+protected:
+    void keyPressEvent(QKeyEvent* event);
+    void keyReleaseEvent(QKeyEvent* event);
 
 private:
     Ui::SessionList *ui;

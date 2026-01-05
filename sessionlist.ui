@@ -10,6 +10,9 @@
     <height>343</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::FocusPolicy::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Yakuake Sessions</string>
   </property>
@@ -20,7 +23,7 @@
       <bool>false</bool>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
+      <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
      </property>
     </widget>
    </item>

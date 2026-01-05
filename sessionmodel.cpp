@@ -3,9 +3,9 @@
 #include <algorithm>
 #include "sessionmodel.h"
 
-SessionModel::SessionModel(const QString &organization, const QString &application) :
-    QAbstractListModel(),
-    settings(organization, application)
+SessionModel::SessionModel(const QString &organization, const QString &application)
+    : QAbstractListModel()
+    , settings(organization, application)
 {
     for (const QString &key: settings.childGroups()) {
         settings.beginGroup(key);
@@ -42,14 +42,20 @@ QVariant SessionModel::data(const QModelIndex &index, int role) const
 {
     switch (role) {
         case Qt::DisplayRole:
-            return sessions.at(index.row())->name;
+            if (m_showHotkeys) {
+                return QString::fromUtf8("[%0] %1", -1)
+                    .arg(index.row() + 1)
+                    .arg(sessions.at(index.row())->name);
+            } else {
+                return sessions.at(index.row())->name;
+            }
         case Qt::UserRole:
             return QVariant::fromValue((void *)sessions.at(index.row()));
         case Qt::DecorationRole:
         if (sessions.at(index.row())->favorite) {
             return QIcon::fromTheme("favorite");
            } else {
-            return QVariant();
+               return QVariant();
         }
         default:
             return QVariant();

@@ -1,18 +1,19 @@
+#include "sessionlist.h"
 #include <QDBusInterface>
 #include <QItemSelectionModel>
+#include <QKeyEvent>
 #include <QListIterator>
 #include <QMessageBox>
 #include <QModelIndex>
+#include "qevent.h"
 #include "session.h"
 #include "sessionedit.h"
-#include "sessionlist.h"
 #include "ui_sessionlist.h"
 
-
-SessionList::SessionList(QDialog *parent) :
-    QDialog(parent),
-    ui(new Ui::SessionList),
-    model("WildPeppers.net", "YakuakeSessions")
+SessionList::SessionList(QDialog *parent)
+    : QDialog(parent)
+    , ui(new Ui::SessionList)
+    , model("WildPeppers.net", "YakuakeSessions")
 {
     ui->setupUi(this);
     ui->listView->setModel(&model);
@@ -89,6 +90,30 @@ void SessionList::selectionChanged()
     bool isSingle = ui->listView->selectionModel()->selectedIndexes().length() == 1;
     ui->startButton->setEnabled(true);
     ui->editButton->setEnabled(isSingle);
+}
+
+void SessionList::keyPressEvent(QKeyEvent *event)
+{
+    QDialog::keyPressEvent(event);
+    QKeyCombination combination = event->keyCombination();
+    if (combination.keyboardModifiers() & Qt::AltModifier) {
+        model.setShowHotkeys(true);
+        if (combination.key() >= Qt::Key::Key_1 && combination.key() <= Qt::Key::Key_9) {
+            int index = combination.key() - Qt::Key::Key_1;
+            QItemSelectionModel *selectionModel{ui->listView->selectionModel()};
+            selectionModel->setCurrentIndex(ui->listView->model()->index(index, 0),
+                                            QItemSelectionModel::ClearAndSelect);
+            startSession();
+        }
+    }
+}
+
+void SessionList::keyReleaseEvent(QKeyEvent *event)
+{
+    QDialog::keyReleaseEvent(event);
+    if (model.showHotkeys() && !(event->keyCombination().keyboardModifiers() & Qt::AltModifier)) {
+        model.setShowHotkeys(false);
+    }
 }
 
 const char* SessionList::commandsMap[] = {"addSession",
