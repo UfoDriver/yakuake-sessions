@@ -18,7 +18,8 @@ SessionModel::SessionModel(const QString &organization,
     settings.endGroup();
   }
 
-  std::sort(sessions.begin(), sessions.end(), compare_sessions_by_pointer);
+  std::sort(sessions.begin(), sessions.end(),
+            [](const Session *lhs, const Session *rhs) { return *lhs < *rhs; });
 }
 
 SessionModel::~SessionModel() {

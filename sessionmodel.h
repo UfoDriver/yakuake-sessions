@@ -30,11 +30,6 @@ private:
   QSettings settings;
   QList<Session *> sessions;
   bool m_showHotkeys = false;
-
-  static bool compare_sessions_by_pointer(const Session *lhs,
-                                          const Session *rhs) {
-    return *lhs < *rhs;
-  }
 };
 
 #endif // SESSIONMODEL_H
